@@ -42,6 +42,21 @@ func BenchmarkDeviceCount1(b *testing.B) {
 	Shutdown()
 }
 
+func TestGetDrainStateByUUID(t *testing.T) {
+	Init()
+	defer Shutdown()
+
+	count, err := GetDeviceCount()
+	check(err, t)
+
+	for i := uint(0); i < count; i++ {
+		device, err := NewDevice(i)
+		check(err, t)
+		t.Log("get device", device.UUID)
+		_, _ = GetDrainStateByUUID(device.UUID)
+	}
+}
+
 func TestDriverVersion(t *testing.T) {
 	Init()
 	defer Shutdown()

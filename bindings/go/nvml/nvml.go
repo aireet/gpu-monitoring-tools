@@ -307,6 +307,24 @@ func GetDriverVersion() (string, error) {
 	return systemGetDriverVersion()
 }
 
+func GetDrainStateByUUID(uuid string) (bool, error) {
+	h, err := deviceGetHandleByUUID(uuid)
+	if err != nil {
+		return false, err
+	}
+	var (
+		pci        C.nvmlPciInfo_t
+		drainState C.nvmlEnableState_t
+	)
+	r := C.nvmlDeviceGetPciInfo(h.dev, &pci)
+	if r == C.NVML_ERROR_NOT_SUPPORTED {
+		return false, nil
+	}
+	C.nvmlDeviceQueryDrainState(&pci, &drainState)
+	fmt.Printf("Drain state: %+v", drainState)
+	return false, nil
+}
+
 func GetCudaDriverVersion() (*uint, *uint, error) {
 	return systemGetCudaDriverVersion()
 }
